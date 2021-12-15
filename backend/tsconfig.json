@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "sourceMap": false,
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "target": "ES2015",
+        "esModuleInterop": true
+    }
+}
