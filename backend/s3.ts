@@ -1,5 +1,4 @@
-import { S3, SharedIniFileCredentials } from 'aws-sdk'
-
+import { S3, SharedIniFileCredentials } from 'aws-sdk';
 
 
 const credentials = new SharedIniFileCredentials({profile: 'default'})
@@ -21,4 +20,20 @@ export async function createBucket(bucketName) : Promise<void> {
     } catch (error){
         console.log("error", error)
     }
+}
+
+export async function getSignedUrlForGetObject(bucketName, key) : Promise<string> {
+    return s3Client.getSignedUrl('getObject', {
+        Bucket: bucketName,
+        Key: key,
+        Expires: 900
+    })
+}
+
+export async function getSignedUrlForPutObject(bucketName, key) : Promise<string> {
+    return s3Client.getSignedUrl('putObject', {
+        Bucket: bucketName,
+        Key: key,
+        Expires: 900
+    })
 }
