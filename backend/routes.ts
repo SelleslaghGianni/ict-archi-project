@@ -1,35 +1,24 @@
-import { Request, Response } from 'express'
-import { createBucket, getSignedUrlForGetObject, getSignedUrlForPutObject, listBuckets } from "./s3"
+import { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { getSignedUrlForGetObject } from "./s3";
 
-export function helloWorld(req, res) {
-    console.log('hello world')
-    console.log(req.params)
-    res.json(req.params)
+
+const bucketName = 'sof3-groep5-ict-archi'
+
+
+// Get request for a signed url to get an object from s3
+export async function getImage (req: Request, res: Response) {
+    const uuid = req.params.uuid
+    const reply = await getSignedUrlForGetObject(bucketName, uuid)
+    res.json(reply)
 }
 
-export async function buckets (req, res) {
-    res.json(await listBuckets())
-}
-
-export async function createABucket (req: Request, res: Response) {
-    console.log(req.body)
+// Post request to upload image
+export async function uploadImage (req: Request, res: Response) {
     const {bucketName} = req.body
-    console.log("creating bucket")
-    await createBucket(bucketName)
-    res.json(await listBuckets())
-}
-
-export async function getPutUrl (req: Request, res: Response) {
-    const {bucketName, key} = req.body
+    const uuid = uuidv4()
     res.json({
-        putUrl: await getSignedUrlForPutObject(bucketName, key)
-    })
-}
-
-export async function getGetUrl (req: Request, res: Response) {
-    const {bucketName, key} = req.body
-    res.json({
-        getUrl: await getSignedUrlForGetObject(bucketName, key)
+        getUrl: await getSignedUrlForGetObject(bucketName, uuid), "uuid": uuid
     })
 }
     
