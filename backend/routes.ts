@@ -32,7 +32,7 @@ export async function uploadImage (req: Request, res: Response) {
 
 // Post request to register user
 // Body: username and password
-// Returns: success or failure
+// Returns: success and token
 export async function register(req, res) {
     const email = req.body.email
     const password = req.body.password
@@ -43,7 +43,9 @@ export async function register(req, res) {
     }
     const newUser = new User(email, password)
     await newUser.save()
-    res.json({ success: "User created!" })
+    const user = await User.find(email)
+    const token = await auth.genToken(user)
+    res.json({ success: "User created!", token })
 }
 
 // Post request to login user
