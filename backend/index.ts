@@ -1,17 +1,8 @@
 import express from 'express';
-import { getImage, uploadImage } from './routes';
+import { getImage, login, register, uploadImage } from './routes';
 
-const knex = require('knex')({
-    client: 'mysql',
-    connection: {
-      host : 'ict-archi-sof3-groep5.cv407npsmk57.us-east-1.rds.amazonaws.com',
-      port : 3306,
-      user : 'admin',
-      password : 'sof3-groep5',
-      database : 'sof3-groep5'
-    }
-  });
-
+const knex = require("./db")
+knex.init()
 
 
 const app = express()
@@ -21,6 +12,10 @@ app.use(express.json())
 app.post('/api/files', uploadImage)
 
 app.get('/api/files/:uuid', getImage)
+
+app.post('/user/register', register)
+
+app.post('/user/login', login)
 
 app.listen(3000, () => {
     console.log('Listening on port 3000')
