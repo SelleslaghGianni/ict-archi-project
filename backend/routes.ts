@@ -43,8 +43,11 @@ export async function uploadImage (req: Request, res: Response) {
 // Body: username and password
 // Returns: success and token
 export async function register(req, res) {
+
     const email = req.body.email
     const password = req.body.password
+
+
     if(!email || !password) {
         return res.status(400).json({
             message: 'Missing parameters'
@@ -63,6 +66,7 @@ export async function register(req, res) {
 export async function login(req, res) {
     const email = req.body.email;
     const password = req.body.password;
+
     const user = await User.find(email)
     if (!user) {
         return res.status(401).json({ error: "Invalid login." })
