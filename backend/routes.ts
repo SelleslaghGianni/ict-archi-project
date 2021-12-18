@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { getSignedUrlForGetObject } from "./s3";
+import { getSignedUrlForGetObject, getSignedUrlForPutObject } from "./s3";
 import auth = require("./auth")
 import User = require("./user")
 const knex = require('./db')
@@ -15,7 +15,7 @@ const bucketName = 'sof3-groep5-ict-archi'
 export async function getImage (req: Request, res: Response) {
     const uuid = req.params.uuid
     const user = req.params.user
-    const image = await knex('data').where({uuid: uuid, user: user}).first()
+    const image = await knex.get()('data').where({uuid: uuid, user: user}).first()
     if (!image) {
         res.status(404).json({error: 'Image not found'})
     }
@@ -35,7 +35,7 @@ export async function uploadImage (req: Request, res: Response) {
     const uuid = uuidv4()
     knex.get()('data').insert({ filename: filename, uuid: uuid, user: user })
     res.json({
-        getUrl: await getSignedUrlForGetObject(bucketName, uuid), "uuid": uuid
+        getUrl: await getSignedUrlForPutObject(bucketName, uuid), "uuid": uuid
     })
 }
 
