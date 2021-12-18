@@ -23,8 +23,9 @@ export async function getImage (req: Request, res: Response) {
 // Returns: presigned url to upload image and uuid of the image
 export async function uploadImage (req: Request, res: Response) {
     const {filename} = req.body
+    const user = req.body.user
     const uuid = uuidv4()
-    knex.get()('data').insert({ filename: filename, uuid: uuid })
+    knex.get()('data').insert({ filename: filename, uuid: uuid, user: user })
     res.json({
         getUrl: await getSignedUrlForGetObject(bucketName, uuid), "uuid": uuid
     })
@@ -64,4 +65,16 @@ export async function login(req, res) {
     }
     const token = await auth.genToken(user)
     res.json({ message: "Successful login!", token })
+}
+
+// Get request to get all files from a user
+// Params: userid
+// Returns: array of all filenames and belonging uuid's
+export async function allFilesFromUser(req, res){
+    const user = req.params.user
+    if (!user) {
+        return res.status(401).json({ error: "Invalid user." })
+    }
+    const files = await knex.get()('data').select().where({user: user})
+    res.json(files)
 }
