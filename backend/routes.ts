@@ -10,11 +10,19 @@ const bucketName = 'sof3-groep5-ict-archi'
 
 
 // Get request for a signed url to get an object from s3
-// Params: uuid of the image
+// Params: uuid of the image and the user id
+// Returns: a signed url to get the image
 export async function getImage (req: Request, res: Response) {
     const uuid = req.params.uuid
-    const reply = await getSignedUrlForGetObject(bucketName, uuid)
-    res.json(reply)
+    const user = req.params.user
+    const image = await knex('data').where({uuid: uuid, user: user}).first()
+    if (!image) {
+        res.status(404).json({error: 'Image not found'})
+    }
+    else {
+        const reply = await getSignedUrlForGetObject(bucketName, uuid)
+        res.json(reply)
+    }
 }
 
 // Post request to upload image
