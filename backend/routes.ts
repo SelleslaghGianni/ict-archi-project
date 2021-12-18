@@ -10,11 +10,19 @@ const bucketName = 'sof3-groep5-ict-archi'
 
 
 // Get request for a signed url to get an object from s3
-// Params: uuid of the image
+// Params: uuid of the image and the user id
+// Returns: a signed url to get the image
 export async function getImage (req: Request, res: Response) {
     const uuid = req.params.uuid
-    const reply = await getSignedUrlForGetObject(bucketName, uuid)
-    res.json(reply)
+    const user = req.params.user
+    const image = await knex('data').where({uuid: uuid, user: user}).first()
+    if (!image) {
+        res.status(404).json({error: 'Image not found'})
+    }
+    else {
+        const reply = await getSignedUrlForGetObject(bucketName, uuid)
+        res.json(reply)
+    }
 }
 
 // Post request to upload image
@@ -23,8 +31,9 @@ export async function getImage (req: Request, res: Response) {
 // Returns: presigned url to upload image and uuid of the image
 export async function uploadImage (req: Request, res: Response) {
     const {filename} = req.body
+    const user = req.body.user
     const uuid = uuidv4()
-    knex.get()('data').insert({ filename: filename, uuid: uuid })
+    knex.get()('data').insert({ filename: filename, uuid: uuid, user: user })
     res.json({
         getUrl: await getSignedUrlForGetObject(bucketName, uuid), "uuid": uuid
     })
@@ -64,4 +73,16 @@ export async function login(req, res) {
     }
     const token = await auth.genToken(user)
     res.json({ message: "Successful login!", token })
+}
+
+// Get request to get all files from a user
+// Params: userid
+// Returns: array of all filenames and belonging uuid's
+export async function allFilesFromUser(req, res){
+    const user = req.params.user
+    if (!user) {
+        return res.status(401).json({ error: "Invalid user." })
+    }
+    const files = await knex.get()('data').select().where({user: user})
+    res.json(files)
 }

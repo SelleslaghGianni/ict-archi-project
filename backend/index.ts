@@ -1,5 +1,5 @@
 import express from 'express';
-import { getImage, login, register, uploadImage } from './routes';
+import { allFilesFromUser, getImage, login, register, uploadImage } from './routes';
 
 const knex = require("./db")
 knex.init()
@@ -13,9 +13,11 @@ app.post('/api/files', uploadImage)
 
 app.get('/api/files/:uuid', getImage)
 
-app.post('/user/register', register)
+app.get('/api/allfiles/:user', allFilesFromUser)
 
-app.post('/user/login', login)
+app.post('/api/user/register', register)
+
+app.post('/api/user/login', login)
 
 app.listen(3000, () => {
     console.log('Listening on port 3000')
