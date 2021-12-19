@@ -19,7 +19,7 @@ app.post('/api/files', uploadImage)
 
 app.get('/api/files', getImage)
 
-app.get('/api/allfiles/:user', allFilesFromUser)
+app.get('/api/allfiles/:user/', allFilesFromUser)
 
 app.post('/api/user/register', register)
 
