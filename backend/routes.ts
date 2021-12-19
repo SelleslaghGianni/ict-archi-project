@@ -24,7 +24,6 @@ export async function getImage (req: Request, res: Response) {
         Key: image.uuid
         };
         s3Client.getObject(params, (err, data) => {
-            console.log(err)
             res.send(data.Body)
         })
     }
