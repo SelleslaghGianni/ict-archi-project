@@ -35,10 +35,13 @@ export async function getImage (req: Request, res: Response) {
 // Saves to database
 // Returns: presigned url to upload image and uuid of the image
 export async function uploadImage (req, res: Response) {
-    const filename = req.body.file
+    try {
     const user = req.body.user
     const uuid = uuidv4()
-    await knex.get()('data').insert({ filename: filename, uuid: uuid, user: user })
+    if (!req.files.uploadedFile.data){
+        res.status(400).json({"error": "No file is present"})
+    }
+    await knex.get()('data').insert({ filename: req.files.uploadedFile.name, uuid: uuid, user: user, time: new Date })
     const uploadParams = {
         Bucket: bucketName,
         // Add the required 'Key' parameter using the 'path' module.
@@ -51,7 +54,9 @@ export async function uploadImage (req, res: Response) {
     s3Client.upload(uploadParams, (err, data) => {
         res.json({"success": "success!"})
     } );
-  
+    } catch {
+        res.status(400).json({"error": "File not present"})
+    }
 }
 
 // Post request to register user
