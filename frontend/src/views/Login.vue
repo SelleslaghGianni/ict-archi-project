@@ -12,7 +12,7 @@ import { XIcon } from '@heroicons/vue/solid'
   const store = useStore()
   const router = useRouter();
   const { openModal, toggleModal } = modalComposition();
-  const email = ref('');
+  const username = ref('');
   const password = ref('');
 
 
@@ -28,7 +28,7 @@ import { XIcon } from '@heroicons/vue/solid'
 
   function handleLogin() {
     axios.post(import.meta.env.VITE_BACKEND_URL + 'api/user/login', {
-      "email": email.value, "password": password.value
+      "email": username.value, "password": password.value
     }).then((response) => {
       store.commit('updateUser', {'jwt': response.data.token})
       router.push('/dashboard/files')
@@ -67,11 +67,11 @@ import { XIcon } from '@heroicons/vue/solid'
       <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
         <form class="space-y-6" @submit.prevent>
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">
+            <label for="username" class="block text-sm font-medium text-gray-700">
               Username
             </label>
             <div class="mt-1">
-              <input v-model="email" id="email" name="email" type="text" autocomplete="email" required="" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+              <input v-model="username" id="username" name="username" type="text" autocomplete="username" required="" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
           </div>
 

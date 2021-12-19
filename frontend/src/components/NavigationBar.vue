@@ -12,11 +12,8 @@ import jwt_decode from 'jwt-decode';
 import {useStore} from "vuex";
 import axios from "axios";
 import {ref} from "vue";
-import {useRouter } from 'vue-router';
 const store = useStore()
-const router = useRouter();
 const { openModal, toggleModal } = uploadModalComposition();
-const { openNotification, toggleNotification } = notificationComposition();
 
 let files = null;
 
@@ -47,7 +44,7 @@ function uploadFile(){
     formData.append('file', 'eeee.txt');
     formData.append('user', jwt_decode(store.state.user.jwt).sub);
 
-    axios.post(import.meta.env.VITE_BACKEND_URL + 'api/files', formData).then((response) => {
+    axios.post(import.meta.env.VITE_BACKEND_URL + 'api/files', formData).then(() => {
       notificationSuccess.value = true;
       store.commit('toggleUploadNotification')
       location.reload();

@@ -10,8 +10,6 @@ const { openModal, toggleModal } = modalComposition();
 
 const store = useStore()
 
-let modalText = ref('Downloading file')
-
 
 const fileList = ref(null)
 
