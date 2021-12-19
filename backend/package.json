@@ -18,6 +18,8 @@
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^5.0.0-alpha.8",
+    "express-fileupload": "^1.2.1",
+    "fs": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.95.14",
     "mysql": "^2.18.1",

@@ -3,7 +3,7 @@ import { S3, SharedIniFileCredentials } from 'aws-sdk';
 
 const credentials = new SharedIniFileCredentials({profile: 'default'})
 
-const s3Client = new S3({region: 'us-east-1', credentials})
+export const s3Client = new S3({region: 'us-east-1', credentials})
 
 
 
@@ -37,3 +37,4 @@ export async function getSignedUrlForPutObject(bucketName, key) : Promise<string
         Expires: 900
     })
 }
+

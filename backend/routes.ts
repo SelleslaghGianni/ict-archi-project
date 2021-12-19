@@ -1,27 +1,31 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { getSignedUrlForGetObject, getSignedUrlForPutObject } from "./s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrlForGetObject, getSignedUrlForPutObject, s3Client } from "./s3";
 import auth = require("./auth")
 import User = require("./user")
 const knex = require('./db')
-
-
 const bucketName = 'sof3-groep5-ict-archi'
 
 
 // Get request for a signed url to get an object from s3
-// Params: uuid of the image and the user id
+// Body: name (filename), userid as user
 // Returns: a signed url to get the image
 export async function getImage (req: Request, res: Response) {
-    const uuid = req.params.uuid
-    const user = req.params.user
+    const uuid = req.body.uuid
+    const user = req.body.user
     const image = await knex.get()('data').where({uuid: uuid, user: user}).first()
     if (!image) {
         res.status(404).json({error: 'Image not found'})
     }
     else {
-        const reply = await getSignedUrlForGetObject(bucketName, uuid)
-        res.json(reply)
+        const params = {
+        Bucket: bucketName, 
+        Key: image.uuid
+        };
+        s3Client.getObject(params, (err, data) => {
+            res.send(data.Body)
+        })
     }
 }
 
@@ -29,14 +33,24 @@ export async function getImage (req: Request, res: Response) {
 // Body: filename of the image
 // Saves to database
 // Returns: presigned url to upload image and uuid of the image
-export async function uploadImage (req: Request, res: Response) {
-    const {filename} = req.body
+export async function uploadImage (req, res: Response) {
+    const filename = req.body.file
     const user = req.body.user
     const uuid = uuidv4()
-    knex.get()('data').insert({ filename: filename, uuid: uuid, user: user })
-    res.json({
-        getUrl: await getSignedUrlForPutObject(bucketName, uuid), "uuid": uuid
-    })
+    await knex.get()('data').insert({ filename: filename, uuid: uuid, user: user })
+    const uploadParams = {
+        Bucket: bucketName,
+        // Add the required 'Key' parameter using the 'path' module.
+        Key: uuid,
+        // Add the required 'Body' parameter
+        Body: req.files.uploadedFile.data,
+    };
+
+    // Upload file to specified bucket.
+    s3Client.upload(uploadParams, (err, data) => {
+        res.json({"success": "success!"})
+    } );
+  
 }
 
 // Post request to register user
