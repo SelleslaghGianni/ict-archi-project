@@ -4,12 +4,19 @@ import NotFound from './views/NotFound.vue'
 import NavigationBar from './components/NavigationBar.vue'
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
+import { useStore } from 'vuex'
+
+
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
 
+  {path: '/', redirect: '/login'},
   { path: '/dashboard',
     component: NavigationBar,
     redirect: '/dashboard/files',
+    meta : {
+      requiresAuth : true
+    },
     children: [
       {
         path: 'files',
@@ -38,3 +45,4 @@ export const routes = [
   },
   { path: '/:path(.*)', component: NotFound },
 ]
+

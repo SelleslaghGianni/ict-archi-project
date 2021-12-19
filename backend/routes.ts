@@ -12,8 +12,8 @@ const bucketName = 'sof3-groep5-ict-archi'
 // Body: name (filename), userid as user
 // Returns: a signed url to get the image
 export async function getImage (req: Request, res: Response) {
-    const uuid = req.body.uuid
-    const user = req.body.user
+    const uuid = req.query.uuid
+    const user = req.query.user
     const image = await knex.get()('data').where({uuid: uuid, user: user}).first()
     if (!image) {
         res.status(404).json({error: 'Image not found'})
@@ -24,6 +24,7 @@ export async function getImage (req: Request, res: Response) {
         Key: image.uuid
         };
         s3Client.getObject(params, (err, data) => {
+            console.log(err)
             res.send(data.Body)
         })
     }
