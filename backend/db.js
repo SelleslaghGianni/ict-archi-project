@@ -13,11 +13,11 @@ module.exports = {
     db = knex({
       client: 'mysql',
       connection: {
-        host: 'ict-archi-sof3-groep5.cv407npsmk57.us-east-1.rds.amazonaws.com',
-        port: 3306,
-        user: 'admin',
-        password: 'sof3-groep5',
-        database: 'sof3-groep5',
+        host: 'xxxxx',
+        port: 111111111,
+        user: '',
+        password: '',
+        database: '',
       },
       acquireConnectionTimeout: 60000,
     })
